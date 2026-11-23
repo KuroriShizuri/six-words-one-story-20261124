@@ -37,10 +37,18 @@ def main() -> int:
             file=sys.stderr,
         )
         return 1
+    if ENTRY != ENTRY.strip() or "  " in ENTRY:
+        print("error: entry has leading, trailing or double whitespace", file=sys.stderr)
+        return 1
 
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as handle:
         handle.write(ENTRY)
+    with open(OUTPUT_PATH, "r", encoding="utf-8", newline="") as handle:
+        written = handle.read()
+    if written != ENTRY:
+        print("error: round-trip check failed: file differs from ENTRY", file=sys.stderr)
+        return 1
     return 0
 
 
